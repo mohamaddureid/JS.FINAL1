@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Student Login Page</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(to right, #ffecd2, #fcb69f);
+      display: flex;
+      justify-content: center;/ align-items: center;
+      height: 100vh;
+    }
+
+
+    .container {
+      background: #fff;
+      padding: 25px;
+      border-radius: 10px;
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+      width: 300px;
+      text-align: center;
+    }
+
+    h2 {
+      margin-bottom: 20px;
+      color: #444;
+    }
+
+    input {
+      width: 90%;
+      padding: 10px;
+      margin: 10px 0;
+      border: 2px solid #ccc;
+      border-radius: 5px;
+      outline: none;
+      transition: 0.3s;
+    }
+
+
+    input:focus {
+      border-color: purple;
+    }
+
+
+    .message {
+      font-size: 12px;
+      color: red;
+      height: 15px;
+      margin-bottom: 5px;
+    }
+
+
+    button {
+      padding: 10px 20px;
+      border: none;
+      background: purple;
+      color: white;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    button:hover {
+      background: darkblue;
+    }
+
+
+    .loading {
+      margin-top: 20px;
+      font-weight: bold;
+    }
+
+    .spinner {
+      border: 4px solid #f3f3f3;
+      border-top: 4px solid green;
+      border-radius: 50%;
+      width: 30px;
+      height: 30px;
+      animation: spin 1s linear infinite;
+      margin: 10px au
+    }
+
+    @keyframes spin {
+      0% {
+        transform: rotate(0deg);
+      }
+
+      100% {
+        transform: rotate(360deg);
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <h1><u>Final Project</u></h1>
+    <h2>Mohamad Dureid</h2>
+
+
+    <div>
+      <input type="text" id="username" placeholder="Email">
+      <div class="message" id="userMsg"></div>
+    </div>
+
+    <div>
+      <input type="password" id="password" placeholder="Password">
+      <div class="message" id="passMsg"></div>
+    </div>
+
+    <button onclick="login()">Sign In</button>
+
+    <div class="loading" id="loading"></div>
+    <div class="spinner" id="spinner"></div>
+  </div>
+
+  <script>
+    const username = document.getElementById("username");
+    const password = document.getElementById("password");
+    const userMsg = document.getElementById("userMsg");
+    const passMsg = document.getElementById("passMsg");
+    const loading = document.getElementById("loading");
+    const spinner = document.getElementById("spinner");
+
+    username.addEventListener("input", function () {
+      const value = username.value;
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+      if (value === "") {
+        username.style.borderColor = "red";
+        userMsg.innerText = "Enter email please";
+      } else if (!emailRegex.test(value)) {
+        username.style.borderColor = "red";
+        userMsg.innerText = "Enter valid email please";
+      } else {
+        username.style.borderColor = "blue";
+        userMsg.innerText = "";
+      }
+    });
+
+    password.addEventListener("input", function () {
+      if (password.value === "") {
+        password.style.borderColor = "red";
+        passMsg.innerText = "Password required!";
+      } else {
+        password.style.borderColor = "blue";
+        passMsg.innerText = "";
+      }
+    });
+
+    function login() {
+      if (username.value === "" || password.value === "") {
+        loading.innerText = "Please fill fields correctly!";
+        loading.style.color = "red";
+        spinner.style.display = "none";
+        return;
+      }
+
+      loading.style.color = "green";
+      loading.innerText = "Contacting server...";
+      spinner.style.display = "block";
+
+
+      fetch("https://jsonplaceholder.typicode.com/posts", {
+        method: "POST",
+        headers: {
+          "Content-type": "application/json; charset=UTF-8"
+        },
+        body: JSON.stringify({
+          email: username.value,
+          password: password.value
+        })
+      })
+
+        .then(res => res.json())
+        .then(data => {
+          spinner.style.display = "none";
+          loading.innerText = "Login successful...";
+          console.log("Server replied:", data);
+        })
+        .catch(err => {
+          spinner.style.display = "none";
+          loading.innerText = "Error connecting to server!";
+          loading.style.color = "red";
+        });
+    }
+  </script>
+</body>
+
+</html>
